@@ -21,6 +21,7 @@ export async function uploadBanner(slotId, file) {
   formData.append("file", file);
   formData.append("upload_preset", UPLOAD_PRESET);
   formData.append("public_id", slotId);
+  formData.append("format", "jpg");
 
   const res = await fetch(
     `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
