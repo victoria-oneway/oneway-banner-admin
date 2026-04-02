@@ -15,19 +15,25 @@ export function getBannerUrlFresh(slotId) {
 }
 
 export async function uploadBanner(slotId, file) {
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", UPLOAD_PRESET);
-  formData.append("public_id", slotId);
+  const base64 = await new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(",")[1]);
+    reader.readAsDataURL(file);
+  });
 
-  const res = await fetch(
-    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-    { method: "POST", body: formData }
-  );
+  const res = await fetch("/api/upload", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      publicId: slotId,
+      fileBase64: base64,
+      fileType: file.type,
+    }),
+  });
 
   if (!res.ok) {
     const err = await res.json();
-    throw new Error(err.error?.message || "업로드 실패");
+    throw new Error(err.error || "업로드 실패");
   }
 
   return await res.json();
