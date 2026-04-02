@@ -7,11 +7,11 @@ export const BANNER_SLOTS = [
 ];
 
 export function getBannerUrl(slotId) {
-  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/q_auto,f_auto/${slotId}`;
+  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/q_auto,f_auto/${slotId}.png`;
 }
 
 export function getBannerUrlFresh(slotId) {
-  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/q_auto,f_auto/${slotId}?t=${Date.now()}`;
+  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/q_auto,f_auto/${slotId}.png?t=${Date.now()}`;
 }
 
 export async function uploadBanner(slotId, file) {
