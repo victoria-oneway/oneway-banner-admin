@@ -64,6 +64,7 @@ function BannerCard({ slot }) {
   const [status, setStatus] = useState("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [imgError, setImgError] = useState(true);
+  const [imgKey, setImgKey] = useState(0);
   const [dragging, setDragging] = useState(false);
   const [imgSize, setImgSize] = useState(null);
 
@@ -85,11 +86,12 @@ function BannerCard({ slot }) {
     };
     tempImg.src = objectUrl;
 
-setStatus("uploading");
+    setStatus("uploading");
     setErrorMsg("");
     try {
       await uploadBanner(slot.id, file);
       setTimeout(() => {
+        setImgKey(k => k + 1);
         setImgError(false);
         setPreviewUrl(getBannerUrlFresh(slot.id));
         setStatus("success");
@@ -110,6 +112,7 @@ setStatus("uploading");
     setImgSize(null);
     try {
       await deleteBanner(slot.id);
+      setImgKey(k => k + 1);
       setPreviewUrl(getBannerUrlFresh(slot.id));
       setImgError(false);
       setStatus("idle");
@@ -139,14 +142,22 @@ setStatus("uploading");
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
       >
-        {imgError ? (
+        <img
+          key={imgKey}
+          src={previewUrl}
+          alt={slot.label}
+          className="preview-img"
+          onLoad={() => setImgError(false)}
+          onError={() => setImgError(true)}
+          style={{ display: imgError ? "none" : "block" }}
+        />
+        {imgError && (
           <div className="preview-empty">
             <span className="empty-icon">+</span>
             <span className="empty-text">이미지 없음</span>
             <span className="empty-hint">여기에 드래그하거나 아래 버튼으로 업로드</span>
           </div>
-        ) : (
-        <img src={previewUrl} alt={slot.label} className="preview-img" onLoad={() => setImgError(false)} onError={() => setImgError(true)} />        )}
+        )}
         {isLoading && (
           <div className="preview-overlay">
             <div className="spinner" />
@@ -198,7 +209,7 @@ export default function App() {
     <div className="admin-wrap">
       <header className="admin-header">
         <div className="header-logo">
-  <img src="/logo.png" alt="Oneway" className="header-logo-img" />
+          <img src="/logo.png" alt="Oneway" className="header-logo-img" />
           <span className="logo-sub">banner admin</span>
         </div>
         <div className="header-right">
