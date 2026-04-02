@@ -63,7 +63,7 @@ function BannerCard({ slot }) {
   const [previewUrl, setPreviewUrl] = useState(getBannerUrlFresh(slot.id));
   const [status, setStatus] = useState("idle");
   const [errorMsg, setErrorMsg] = useState("");
-  const [imgError, setImgError] = useState(false);
+  const [imgError, setImgError] = useState(true);
   const [dragging, setDragging] = useState(false);
   const [imgSize, setImgSize] = useState(null);
 
@@ -100,7 +100,7 @@ setStatus("uploading");
       setStatus("error");
     }
   };
-  
+
   const handleInputChange = (e) => handleFile(e.target.files[0]);
   const handleDrop = (e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); };
 
@@ -146,8 +146,7 @@ setStatus("uploading");
             <span className="empty-hint">여기에 드래그하거나 아래 버튼으로 업로드</span>
           </div>
         ) : (
-          <img src={previewUrl} alt={slot.label} className="preview-img" onError={() => setImgError(true)} />
-        )}
+        <img src={previewUrl} alt={slot.label} className="preview-img" onLoad={() => setImgError(false)} onError={() => setImgError(true)} />        )}
         {isLoading && (
           <div className="preview-overlay">
             <div className="spinner" />
